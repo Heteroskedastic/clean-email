@@ -1,5 +1,5 @@
 #!/bin/bash
-git clone hhttps://github.com/Heteroskedastic/clean-email.git /home/jenkins/clean-email
+git clone https://github.com/Heteroskedastic/clean-email.git /home/jenkins/clean-email
 cd /home/jenkins/clean-email
 git checkout main
 mkdir -p media
