@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% load socialaccount %}
+{% load i18n %}
+
+{% block content %}
+
+<v-content dark>
+  <v-container dark fluid fill-height>
+    <v-layout align-center justify-center>
+      <v-flex xs8 sm4 md4>
+
+        <v-card class="elevation-0" color='#343434'>
+          <v-toolbar  class="elevation-0 text-center" color='#343434'>
+            <v-toolbar-title class=" text-center white--text" >Connect Your Mailbox</v-toolbar-title>
+          </v-toolbar>
+          <v-card-text>
+            <v-row>
+              <v-col cols='12' sm='12'>
+                <center>
+                  <form method="post">
+                    {% csrf_token %}
+                    <v-btn type="submit" color='#298aff' class="white--text text-center  text-none"><v-icon>mdi-google</v-icon>  Sign in with Gmail
+
+                  </form>
+                
+                </v-btn></center>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+</v-content>
+
+
+
+
+{% endblock %}

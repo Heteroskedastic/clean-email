@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% load i18n %}
+
+{% block content %}
+
+
+
+<h1>Clean Code OAuth Check </h1>
+{% if user.is_authenticated %}
+ <p>Welcome, You are logged in as <b>{{ user.email }}</b></p>
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+
+
+{% endblock %}
