@@ -27,7 +27,7 @@ RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 RUN ln -fs /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
 
 #Port forwarding
-EXPOSE 8004
+EXPOSE 8005
 
 USER jenkins
 
