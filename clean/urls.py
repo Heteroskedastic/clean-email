@@ -28,5 +28,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LandingView.as_view()),
     path('accounts/', include('allauth.urls')),
+    path('', include('emailcleaner.urls')),
     path('logout', LogoutView.as_view()),
 ]
