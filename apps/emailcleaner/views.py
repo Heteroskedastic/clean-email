@@ -28,6 +28,9 @@ def get_gmail_service(token: SocialToken):
 
 def getfunction(request):
     service = get_gmail_service(SocialToken.objects.first())
+
+    # getProfile
+    print(service.users().getProfile(userId='me'))
     try:
         final_results= []
         results = service.users().messages().list(userId='me').execute()

@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     #  Apps
-    'emailcleaner'
+    'apps.emailcleaner',
+    'apps.gmail'
 ]
 
 MIDDLEWARE = [

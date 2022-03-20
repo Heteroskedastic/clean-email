@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class EmailcleanerConfig(AppConfig):
+class GmailConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'emailcleaner'
+    name = 'apps.gmail'

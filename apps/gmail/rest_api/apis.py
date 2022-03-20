@@ -1,12 +1,15 @@
+import logging
+
 from django.http import HttpResponse, JsonResponse
-from rest_framework import views
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from . import serializers
-from allauth.socialaccount.models import SocialToken, SocialApp, SocialAccount
+from allauth.socialaccount.models import SocialToken, SocialApp
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import base64
+
 
 
 def get_gmail_service(token: SocialToken):
@@ -25,48 +28,49 @@ def get_gmail_service(token: SocialToken):
          client_secret=google_app.secret)
     return build('gmail', 'v1', credentials=credentials)
 
-class UserAPI(APIView):
-    """
-    ResultView for getting results
-    """
-    # Query Param Schema Definition
-    def get(self, request):
-        return Response(serializers.UserSerializers(request.user).data)
 
-class Lables(APIView):
+class GetProfile(APIView):
     """
-    ResultView for getting results
+    Message API's to get User profile
     """
-    # Query Param Schema Definition
     def get(self, request):
         service = get_gmail_service(SocialToken.objects.first())
-        results = service.users().labels().list(userId='me').execute()
-        labels = results.get('labels', [])
-        return Response(labels)
+        try:
+            results = service.users().getProfile(userId='me').execute()
+            print(results)
+            return JsonResponse(results, safe=False)
+        except HttpError as err:
+            print('GMAIL ACCESS CHECK ERROR:', err)
+        return HttpResponse('asd')
 
-
+class FullMessage(APIView):
+    def get(self, request):
+        service = get_gmail_service(SocialToken.objects.first())
+        try:
+            results = service.users().messages().get(userId='me', id=request.GET.get('message_id')).execute()
+            string_enc = results.get('payload').get('body').get('data')
+            try:
+                print('string_enc', string_enc)
+                string = base64.urlsafe_b64decode(string_enc)
+                return HttpResponse(string)
+            except Exception as e:
+                pass
+        except Exception as e:
+            return HttpResponse('heelow')
 class Message(APIView):
     """
-    Message for getting results
+    Message API's to get all the messages
     """
-    # Query Param Schema Definition
     def get(self, request):
         service = get_gmail_service(SocialToken.objects.first())
         try:
             final_results = []
-            results = service.users().messages().list(userId='me').execute()
-            print(results)
-            labels = results.get('messages', [])
-            print(labels)
-            if not labels:
-                print('No labels found.')
-                return
-            print('Labels:')
-            for label in labels:
-                print(label)
-                results = service.users().messages().get(userId='me', id=label['id']).execute()
+            list_of_mails = service.users().messages().list(userId='me').execute()
+            messages = list_of_mails.get('messages', [])
+            for message in messages:
+                results = service.users().messages().get(userId='me', id=message['id']).execute()
                 final_results.append(results)
             return JsonResponse(final_results, safe=False)
         except HttpError as err:
             print('GMAIL ACCESS CHECK ERROR:', err)
-        return HttpResponse('asd')
+        return JsonResponse([])
