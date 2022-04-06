@@ -28,13 +28,27 @@ def get_gmail_service(token: SocialToken):
          client_secret=google_app.secret)
     return build('gmail', 'v1', credentials=credentials)
 
+class Lables(APIView):
+    """
+    ResultView for getting results
+    """
+    # Query Param Schema Definition
+    def get(self, request):
+        try:
+            service = get_gmail_service(SocialToken.objects.first())
+            results = service.users().labels().list(userId='me').execute()
+            labels = results.get('labels', [])
+            return Response(labels)
+        except Exception as e:
+            logging.error(str(e))
+
 
 class GetProfile(APIView):
     """
     Message API's to get User profile
     """
     def get(self, request):
-        service = get_gmail_service(SocialToken.objects.first())
+        service = get_gmail_service(SocialToken.objects.get(account__user=request.user))
         try:
             results = service.users().getProfile(userId='me').execute()
             print(results)
@@ -45,7 +59,7 @@ class GetProfile(APIView):
 
 class FullMessage(APIView):
     def get(self, request):
-        service = get_gmail_service(SocialToken.objects.first())
+        service = get_gmail_service(SocialToken.objects.get(account__user=request.user))
         try:
             results = service.users().messages().get(userId='me', id=request.GET.get('message_id')).execute()
             string_enc = results.get('payload').get('body').get('data')
@@ -62,10 +76,13 @@ class Message(APIView):
     Message API's to get all the messages
     """
     def get(self, request):
-        service = get_gmail_service(SocialToken.objects.first())
+        service = get_gmail_service(SocialToken.objects.get(account__user=request.user))
         try:
+            print(service)
+            print(request)
             final_results = []
             list_of_mails = service.users().messages().list(userId='me').execute()
+            print(list_of_mails)
             messages = list_of_mails.get('messages', [])
             for message in messages:
                 results = service.users().messages().get(userId='me', id=message['id']).execute()

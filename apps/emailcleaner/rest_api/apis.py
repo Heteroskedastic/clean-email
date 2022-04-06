@@ -35,19 +35,7 @@ class UserAPI(APIView):
     def get(self, request):
         return Response(serializers.UserSerializers(request.user).data)
 
-class Lables(APIView):
-    """
-    ResultView for getting results
-    """
-    # Query Param Schema Definition
-    def get(self, request):
-        try:
-            service = get_gmail_service(SocialToken.objects.first())
-            results = service.users().labels().list(userId='me').execute()
-            labels = results.get('labels', [])
-            return Response(labels)
-        except Exception as e:
-            logging.error(str(e))
+
 
 
 class Message(APIView):

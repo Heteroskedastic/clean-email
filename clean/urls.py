@@ -27,6 +27,7 @@ class LandingView(LoginRequiredMixin, TemplateView):
     login_url = '/accounts/google/login'
     template_name = "index.html"
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LandingView.as_view()),
@@ -39,5 +40,5 @@ urlpatterns = [
         description="API for all things …",
         version="1.0.0"
     ), name='openapi-schema'),
-    path('api/docs', include_docs_urls(title='Clean Api', permission_classes=[AllowAny],)),
+    path('api/docs', include_docs_urls(title='Clean Api', permission_classes=[AllowAny], )),
 ]
